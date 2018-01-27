@@ -88,7 +88,7 @@ internal class Queue {
         }
     }
 
-    func sync(_ block: @escaping () -> Void)  {
+    func sync(_ block: @escaping () -> Void) {
         if self.current {
             return block()
         } else {
@@ -109,7 +109,7 @@ internal class Queue {
             return block()
         } else {
             var result: T!
-            
+
             self.queue.sync(execute: {
                 result = block()
             })

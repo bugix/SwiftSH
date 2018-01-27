@@ -26,14 +26,14 @@ import Foundation
 import UIKit
 
 class MainViewController: UITableViewController {
-    
+
     let data: [(name: String, segue: String)] = [("Shell", "OpenShell"), ("Command", "ExecCommand")]
-    
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let loginViewController = segue.destination as? LoginViewController else {
             return
         }
-        
+
         guard let cell = sender as? UITableViewCell, let indexPath = self.tableView.indexPath(for: cell) else {
             return
         }
@@ -41,17 +41,17 @@ class MainViewController: UITableViewController {
         loginViewController.title = self.data[indexPath.row].name
         loginViewController.segue = self.data[indexPath.row].segue
     }
-    
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.data.count
     }
-    
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BasicCell", for: indexPath)
-        
+
         cell.textLabel?.text = self.data[indexPath.row].name
-        
+
         return cell
     }
-    
+
 }

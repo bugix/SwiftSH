@@ -74,7 +74,7 @@ internal extension in6_addr {
 
         return address
     }
-    
+
 }
 
 // MARK: - GCD
@@ -94,7 +94,7 @@ internal extension DispatchQueue {
             throw error
         }
     }
-    
+
     class func syncOnMain(_ block: () -> Void) {
         if Thread.isMainThread {
             block()

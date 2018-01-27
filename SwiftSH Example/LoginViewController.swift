@@ -26,30 +26,30 @@ import Foundation
 import UIKit
 
 protocol SSHViewController: class {
-    
+
     var requiresAuthentication: Bool { get set }
     var hostname: String! { get set }
     var port: UInt16? { get set }
     var username: String! { get set }
     var password: String? { get set }
-    
+
 }
 
 class LoginViewController: UIViewController {
-    
+
     @IBOutlet var connectButton: UIBarButtonItem!
     @IBOutlet var hostnameTextField: UITextField!
     @IBOutlet var portTextField: UITextField!
     @IBOutlet var usernameTextField: UITextField!
     @IBOutlet var passwordTextField: UITextField!
     @IBOutlet var authenticationMethodControl: UISegmentedControl!
-    
+
     var segue: String!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
+
         let userDefaults = UserDefaults.standard
         userDefaults.register(defaults: [ "auth": 0 ])
         self.hostnameTextField.text = userDefaults.string(forKey: "hostname")
@@ -58,7 +58,7 @@ class LoginViewController: UIViewController {
         self.passwordTextField.text = userDefaults.string(forKey: "password")
         self.authenticationMethodControl.selectedSegmentIndex = userDefaults.integer(forKey: "auth")
         self.authenticationMethodControl.sendActions(for: .valueChanged)
-        
+
         self.connectButton.isEnabled = self.isValidConfiguration()
     }
 
@@ -66,7 +66,7 @@ class LoginViewController: UIViewController {
         guard let viewController = segue.destination as? SSHViewController else {
             return
         }
-        
+
         let userDefaults = UserDefaults.standard
         userDefaults.set(self.hostnameTextField.text, forKey: "hostname")
         userDefaults.set(self.portTextField.text, forKey: "port")
@@ -74,7 +74,7 @@ class LoginViewController: UIViewController {
         userDefaults.set(self.passwordTextField.text, forKey: "password")
         userDefaults.set(self.authenticationMethodControl.selectedSegmentIndex, forKey: "auth")
         userDefaults.synchronize()
-        
+
         viewController.requiresAuthentication = self.authenticationMethodControl.selectedSegmentIndex != 0
         viewController.hostname = self.hostnameTextField.text
         viewController.username = self.usernameTextField.text
@@ -85,36 +85,36 @@ class LoginViewController: UIViewController {
             viewController.port = port
         }
     }
-    
+
     @IBAction func tapBackground() {
         self.hostnameTextField.resignFirstResponder()
         self.portTextField.resignFirstResponder()
         self.usernameTextField.resignFirstResponder()
         self.passwordTextField.resignFirstResponder()
     }
-    
+
     @IBAction func authenticationMethodChanged() {
         self.passwordTextField.isEnabled = self.authenticationMethodControl.selectedSegmentIndex == 1
         self.usernameTextField.returnKeyType = self.passwordTextField.isEnabled ? .next : .go
     }
-    
+
     @IBAction func connect(_ sender: AnyObject!) {
         self.performSegue(withIdentifier: self.segue, sender: sender)
     }
-    
+
     func isValidConfiguration() -> Bool {
         guard !self.hostnameTextField.text!.isEmpty else { return false }
         guard self.portTextField.text!.isEmpty || (!self.portTextField.text!.isEmpty && Int(self.portTextField.text!) != nil) else { return false }
         guard !self.usernameTextField.text!.isEmpty else { return false }
         guard !self.passwordTextField.isEnabled || (self.passwordTextField.isEnabled && !self.passwordTextField.text!.isEmpty) else { return false }
-        
+
         return true
     }
 
 }
 
 extension LoginViewController: UITextFieldDelegate {
-    
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField === self.hostnameTextField {
             self.usernameTextField.becomeFirstResponder()
@@ -125,16 +125,16 @@ extension LoginViewController: UITextFieldDelegate {
         } else if textField.returnKeyType == .go && self.isValidConfiguration() {
             self.performSegue(withIdentifier: self.segue, sender: textField)
         }
-        
+
         return false
     }
-    
+
     func textFieldDidEndEditing(_ textField: UITextField) {
         self.connectButton.isEnabled = self.isValidConfiguration()
     }
-    
+
     @IBAction func textFiedTextChanged(_ textFiled: UITextField!) {
         self.connectButton.isEnabled = self.isValidConfiguration()
     }
-    
+
 }

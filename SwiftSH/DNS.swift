@@ -54,7 +54,7 @@ internal class DNS {
         var context = CFHostClientContext()
         context.info = Unmanaged.passRetained(self).toOpaque()
         CFHostSetClient(self.host, {
-            (theHost: CFHost, typeInfo: CFHostInfoType, error: UnsafePointer<CFStreamError>?, info: UnsafeMutableRawPointer?) -> () in
+            (theHost: CFHost, typeInfo: CFHostInfoType, error: UnsafePointer<CFStreamError>?, info: UnsafeMutableRawPointer?) -> Void in
             Unmanaged<DNS>.fromOpaque(info!).takeUnretainedValue().resolving = false
             }, &context)
 
@@ -83,8 +83,8 @@ internal class DNS {
               let addresses = rawAddresses as NSArray as? [Data], hasBeenResolved.boolValue else {
             throw DNSError.failed
         }
-        
+
         return addresses
     }
-    
+
 }

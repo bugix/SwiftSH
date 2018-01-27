@@ -22,10 +22,10 @@
 // SOFTWARE.
 //
 
-internal func _bridge<T: AnyObject>(_ obj : T) -> UnsafeRawPointer {
+internal func _bridge<T: AnyObject>(_ obj: T) -> UnsafeRawPointer {
     return UnsafeRawPointer(Unmanaged.passUnretained(obj).toOpaque())
 }
 
-internal func _bridge<T: AnyObject>(_ ptr : UnsafeRawPointer) -> T {
+internal func _bridge<T: AnyObject>(_ ptr: UnsafeRawPointer) -> T {
     return Unmanaged<T>.fromOpaque(ptr).takeUnretainedValue()
 }

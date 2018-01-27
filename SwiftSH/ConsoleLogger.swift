@@ -47,11 +47,11 @@ internal struct ConsoleLogger: Logger {
     func error(_ message: String) {
         self.log(.error, message)
     }
-    
+
     func log(_ messageLevel: LogLevel, _ message: String) {
         if self.enabled && messageLevel <= self.level {
             print("\(messageLevel): \(message)")
         }
     }
-    
+
 }

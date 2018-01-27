@@ -44,7 +44,7 @@ public class SSHShell<T: RawLibrary>: SSHChannel<T> {
         if let readSource = self.readSource, !readSource.isCancelled {
             readSource.cancel()
         }
-        
+
         if let writeSource = self.writeSource, !writeSource.isCancelled {
             writeSource.cancel()
         }
@@ -54,13 +54,13 @@ public class SSHShell<T: RawLibrary>: SSHChannel<T> {
 
     public fileprivate(set) var readStringCallback: ((_ string: String?, _ error: String?) -> Void)?
     public fileprivate(set) var readDataCallback: ((_ data: Data?, _ error: Data?) -> Void)?
-    
+
     public func withCallback(_ callback: ((_ string: String?, _ error: String?) -> Void)?) -> Self {
         self.readStringCallback = callback
 
         return self
     }
-    
+
     public func withCallback(_ callback: ((_ data: Data?, _ error: Data?) -> Void)?) -> Self {
         self.readDataCallback = callback
 
@@ -79,12 +79,12 @@ public class SSHShell<T: RawLibrary>: SSHChannel<T> {
         self.queue.async(completion: completion) {
             // Open the channel
             try super.open()
-            
+
             self.log.debug("Opening the shell...")
-            
+
             // Set blocking mode
             self.session.blocking = true
-            
+
             // Open a shell
             try self.channel.shell()
 
@@ -96,7 +96,7 @@ public class SSHShell<T: RawLibrary>: SSHChannel<T> {
 
             readSource.setEventHandler { [unowned self] in
                 self.log.debug("Handle socket read")
-                
+
                 // Set non-blocking mode
                 self.session.blocking = false
 
@@ -116,7 +116,7 @@ public class SSHShell<T: RawLibrary>: SSHChannel<T> {
                     if data.count > 0 {
                         error = data
                     }
-                } catch let error{
+                } catch let error {
                     self.log.error("[ERR] \(error)")
                 }
 
@@ -158,7 +158,7 @@ public class SSHShell<T: RawLibrary>: SSHChannel<T> {
 
             writeSource.setEventHandler { [unowned self] in
                 self.log.debug("Handle socket write")
-                
+
                 // Set non-blocking mode
                 self.session.blocking = false
 
@@ -197,12 +197,12 @@ public class SSHShell<T: RawLibrary>: SSHChannel<T> {
                     writeSource.resume()
                 }
             }
-            
+
             self.log.debug("Shell opened successfully")
         }
     }
 
-    public func close(_ completion: (() -> ())?) {
+    public func close(_ completion: (() -> Void)?) {
         self.queue.async {
             self.close()
 
@@ -216,7 +216,7 @@ public class SSHShell<T: RawLibrary>: SSHChannel<T> {
 
     internal override func close() {
         self.log.debug("Closing the shell...")
-        
+
         // Cancel the socket sources
         if let readSource = self.readSource, !readSource.isCancelled {
             readSource.cancel()
@@ -240,7 +240,7 @@ public class SSHShell<T: RawLibrary>: SSHChannel<T> {
     }
 
     // MARK: - Write
-    
+
     public func write(_ data: Data) -> Self {
         self.write(data, completion: nil)
 
@@ -263,7 +263,7 @@ public class SSHShell<T: RawLibrary>: SSHChannel<T> {
 
     public func write(_ command: String) -> Self {
         self.write(command, completion: nil)
-        
+
         return self
     }
 
@@ -276,7 +276,7 @@ public class SSHShell<T: RawLibrary>: SSHChannel<T> {
             }
             return
         }
-        
+
         self.write(data, completion: completion)
     }
 }

@@ -61,7 +61,7 @@ open class SSHChannel<T: RawLibrary>: SSHSession<T> {
             guard !self.channel.opened else {
                 throw SSHError.Channel.alreadyOpen
             }
-            
+
             self.log.debug("Opening the channel...")
 
             // Set blocking mode
@@ -91,7 +91,7 @@ open class SSHChannel<T: RawLibrary>: SSHSession<T> {
 
     internal func close() {
         self.log.debug("Closing the channel...")
-        
+
         // Set blocking mode
         self.session.blocking = true
 
@@ -102,17 +102,17 @@ open class SSHChannel<T: RawLibrary>: SSHSession<T> {
             self.log.error("\(error)")
         }
     }
-    
-    public override func disconnect(_ completion: (() -> ())?) {
+
+    public override func disconnect(_ completion: (() -> Void)?) {
         self.queue.async {
             self.close()
-            
+
             super.disconnect(completion)
         }
     }
 
     // MARK: - Terminal
-    
+
     public func setTerminalSize(width: UInt, height: UInt) -> Self {
         self.setTerminalSize(width: width, height: height, completion: nil)
 

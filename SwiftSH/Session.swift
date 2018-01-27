@@ -36,10 +36,10 @@ open class SSHSession<T: RawLibrary> {
 
     /// The server host to connect to.
     public let host: String
-    
+
     /// The server port to connect to.
     public let port: UInt16
-    
+
     /// The logger.
     public var log: Logger
 
@@ -205,18 +205,18 @@ open class SSHSession<T: RawLibrary> {
 
             // Connection completed successfully
             self.connected = true
-            
+
             // Get the remote banner
             if let remoteBanner = self.remoteBanner {
                 self.log.debug("Remote banner is \(remoteBanner)")
             }
-            
+
             // Get the host's fingerprint
             self.log.debug("Fingerprint is \(try! self.fingerprint())")
         }
     }
 
-    public func disconnect(_ completion: (() -> ())?) {
+    public func disconnect(_ completion: (() -> Void)?) {
         self.queue.async {
             self.disconnect()
 
@@ -245,11 +245,11 @@ open class SSHSession<T: RawLibrary> {
             if let socket = self.socket, CFSocketIsValid(socket) {
                 CFSocketInvalidate(socket)
             }
-            
+
             self.socket = nil
 
             self.connected = false
-            
+
             self.log.debug("Disconnected")
         }
     }
@@ -313,7 +313,7 @@ open class SSHSession<T: RawLibrary> {
             }
         }
     }
-    
+
     public func fingerprint(_ hash: Fingerprint = .md5) throws -> String {
         return try self.queue.sync {
             guard self.connected else {
@@ -323,7 +323,7 @@ open class SSHSession<T: RawLibrary> {
             return self.session.fingerprint(hash)
         }
     }
-    
+
     public func checkFingerprint(_ hash: Fingerprint = .md5, callback: @escaping (String) -> Bool) -> Self {
         self.queue.async {
             let fingerprint: String

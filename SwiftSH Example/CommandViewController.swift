@@ -27,24 +27,24 @@ import UIKit
 import SwiftSH
 
 class CommandViewController: UIViewController, SSHViewController {
-    
+
     @IBOutlet var commandTextField: UITextField!
     @IBOutlet var textView: UITextView!
-    
+
     var command: Command!
     var authenticationChallenge: AuthenticationChallenge?
     var semaphore: DispatchSemaphore!
     var passwordTextField: UITextField?
-    
+
     var requiresAuthentication = false
     var hostname: String!
     var port: UInt16?
     var username: String!
     var password: String?
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         if self.requiresAuthentication {
             if let password = self.password {
                 self.authenticationChallenge = .byPassword(username: self.username, password: password)
@@ -53,30 +53,30 @@ class CommandViewController: UIViewController, SSHViewController {
                     DispatchQueue.main.async {
                         self.askForPassword(challenge)
                     }
-                    
+
                     self.semaphore = DispatchSemaphore(value: 0)
                     _ = self.semaphore.wait(timeout: DispatchTime.distantFuture)
                     self.semaphore = nil
-                    
+
                     return self.password ?? ""
                 }
             }
         }
-        
+
         self.textView.text = ""
-        
+
         self.command = Command(host: self.hostname, port: self.port ?? 22)
     }
-    
+
     @IBAction func disconnect() {
         self.command?.disconnect { [unowned self] in
             self.navigationController?.popViewController(animated: true)
         }
     }
-    
+
     func performCommand(_ command: String) {
         self.commandTextField.resignFirstResponder()
-        
+
         self.command
             .connect()
             .authenticate(self.authenticationChallenge)
@@ -88,7 +88,7 @@ class CommandViewController: UIViewController, SSHViewController {
                 }
             }
     }
-    
+
     func askForPassword(_ challenge: String) {
         let alertController = UIAlertController(title: "Authetication challenge", message: challenge, preferredStyle: .alert)
         alertController.addTextField { [unowned self] (textField) in
@@ -104,17 +104,17 @@ class CommandViewController: UIViewController, SSHViewController {
         })
         self.present(alertController, animated: true, completion: nil)
     }
-    
+
 }
 
 extension CommandViewController: UITextFieldDelegate {
-    
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let command = textField.text, !command.isEmpty {
             self.performCommand(command)
         }
-        
+
         return true
     }
-    
+
 }

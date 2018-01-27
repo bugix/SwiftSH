@@ -31,7 +31,7 @@ public protocol RawLibrary {
 
     static func newSession() -> RawSession?
     static func newChannel(_ session: RawSession) -> RawChannel?
-    
+
 }
 
 // MARK: - Fingerprint enum
@@ -120,7 +120,7 @@ public protocol RawSession {
     func authenticateByKeyboardInteractive(_ username: String, callback: @escaping ((String) -> String)) throws
     func authenticateByPublicKey(_ username: String, password: String, publicKey: String, privateKey: String) throws
     func disconnect() throws
-    
+
 }
 
 // MARK: - Environment struct
@@ -135,11 +135,11 @@ public struct Environment {
 // MARK: - Terminal struct
 
 public struct Terminal: ExpressibleByStringLiteral, CustomStringConvertible {
-    
+
     public let name: String
     public var width: UInt
     public var height: UInt
-    
+
     public var description: String {
         return "\(self.name) [\(self.width)x\(self.height)]"
     }
@@ -149,25 +149,25 @@ public struct Terminal: ExpressibleByStringLiteral, CustomStringConvertible {
         self.width = width
         self.height = height
     }
-    
+
     public init(unicodeScalarLiteral value: String) {
         self.name = value
         self.width = 80
         self.height = 24
     }
-    
+
     public init(extendedGraphemeClusterLiteral value: String) {
         self.name = value
         self.width = 80
         self.height = 24
     }
-    
+
     public init(stringLiteral value: StringLiteralType) {
         self.name = value
         self.width = 80
         self.height = 24
     }
-    
+
 }
 
 // MARK: - RawChannel protocol
@@ -195,7 +195,7 @@ public protocol RawChannel {
 // MARK: - RawSFTP protocol
 
 public protocol RawSFTP {
-    
+
 }
 
 // MARK: - RawSCP protocol
